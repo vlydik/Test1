@@ -87,21 +87,35 @@ namespace Test1.Services
                     Console.WriteLine("Created new member");
 
                     command.CommandText =
-                    "SELECT IdTask,Task.Name,Task.Description,Task.Deadline,P.Name,TT.Name from Task join TaskType TT on Task.IdTaskType = TT.IdTaskType join Project P on Task.IdProject = P.IdProject where IdAssignedTo = @id;";
-                    command.Parameters.AddWithValue("id", id);
+                    "SELECT IdTask,Task.Name,Task.Description,Task.Deadline,P.Name,TT.Name FROM Task JOIN TaskType TT ON Task.IdTaskType = TT.IdTaskType JOIN Project P ON Task.IdProject = P.IdProject WHERE IdAssignedTo = @id;";
+                    command.Parameters.AddWithValue("@IdTeamMember", id);
                     reader = command.ExecuteReader();
                     while (reader.Read())
                     {
+                        tm.IdTeamMember = reader[0] as string;
+                        tm.FirstName = reader[1] as string;
+                        tm.LastName = reader[2] as string;
+                        tm.Email = reader[3] as string
                         
                     }
                     command.Parameters.Clear();
                     reader.Close();
 
-                    //Didn't had time to finish :C
+                    command.CommandText = "SELECT IdTask,Task.Name,Task.Description,Task.Deadline,P.Name,TT.Name FROM Task JOIN TaskType TT ON Task.IdTaskType = TT.IdTaskType JOIN Project P ON Task.IdProject = P.IdProject WHERE IdCreator = @id ORDER BY Task.Deadline desc;";
+                    command.Parameters.AddWithValue("@IdTeamMember", id);
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        tm.IdTeamMember = reader[0] as string;
+                        tm.FirstName = reader[1] as string;
+                        tm.LastName = reader[2] as string;
+                        tm.Email = reader[3] as string
+                    }
                 }
+                return tm;
             }
 
-            return null;
+     
         }
     }
 }
